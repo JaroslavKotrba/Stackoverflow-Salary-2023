@@ -1,13 +1,12 @@
 # SALARY APP 2023
 # https://insights.stackoverflow.com/survey
-# shiny
+# shiny2
 
 import numpy as np
 import pandas as pd
 pd.set_option('display.max_rows', 500)
 pd.set_option('display.max_columns', 100)
 import matplotlib.pyplot as plt
-import seaborn as sn
 
 import os
 path = "/Users/HP/OneDrive/Documents/PythonAnaconda/Shiny_Salary_App/Salary_2023"
@@ -301,7 +300,6 @@ import pandas as pd
 pd.set_option('display.max_rows', 500)
 pd.set_option('display.max_columns', 100)
 import matplotlib.pyplot as plt
-import seaborn as sn
 
 import os
 path = "/Users/HP/OneDrive/Documents/PythonAnaconda/Shiny_Salary_App/Salary_2023"
@@ -324,7 +322,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 # Preprocessing
 from sklearn.compose import make_column_transformer
 from sklearn.preprocessing import OneHotEncoder
-column_trans = make_column_transformer((OneHotEncoder(sparse=False),
+column_trans = make_column_transformer((OneHotEncoder(),
 ['Country', 'EdLevel', 'DevType', 'OrgSize', 'OpSys', 'Age']), # non-numeric
 remainder='passthrough')
 
@@ -352,7 +350,7 @@ def print_regression_metrics(model, X_train, X_test, y_train, y_test):
         model_name = model_name.replace("Regression", "")
 
     print(f"{model_name} regression model:")
-    print('PROC: ', round(outcome.difference_percentage.abs().mean(),2),'%')
+    print('MAPE: ', round(outcome.difference_percentage.abs().mean(),2),'%')
     print('MAE: ', round(mean_absolute_error(y_test, y_pred),4))
     print('RMSE: ', round(np.sqrt(mean_squared_error(y_test, y_pred)),4))
     print('R2:', round(r2_score(y_test, y_pred),4))
@@ -452,7 +450,6 @@ print('Time: ', stop - start)
 # ---------------------------------------------------------------------------------------------------------------
 # MODEL XGBoost -------------------------------------------------------------------------------------------------
 
-# Initialize model before tunning
 import xgboost as xgb
 model = xgb.XGBRegressor(
     objective='reg:squarederror',  # Objective function to be used
@@ -561,18 +558,18 @@ sample(pipe, X_test)
 # MODEL CatBoost ------------------------------------------------------------------------------------------------
 
 # conda install catboost
-from catboost import CatBoostRegressor
+# from catboost import CatBoostRegressor
 
-model = CatBoostRegressor(
-    iterations=128,               # Equivalent to n_estimators in XGBoost
-    depth=6,                      # Equivalent to max_depth
-    learning_rate=0.3,            # Same as in XGBoost
-    l2_leaf_reg=1,                # Equivalent to reg_lambda
-    border_count=254,             # Similar to max_bin in XGBoost
-    random_seed=0,                # Equivalent to random_state
-    verbose=False                 # To keep the output clean
-)
+# model = CatBoostRegressor(
+#     iterations=128,               # Equivalent to n_estimators in XGBoost
+#     depth=6,                      # Equivalent to max_depth
+#     learning_rate=0.3,            # Same as in XGBoost
+#     l2_leaf_reg=1,                # Equivalent to reg_lambda
+#     border_count=254,             # Similar to max_bin in XGBoost
+#     random_seed=0,                # Equivalent to random_state
+#     verbose=False                 # To keep the output clean
+# )
 
-pipe = print_regression_metrics(model, X_train, X_test, y_train, y_test)
+# pipe = print_regression_metrics(model, X_train, X_test, y_train, y_test)
 
-sample(pipe, X_test)
+# sample(pipe, X_test)
