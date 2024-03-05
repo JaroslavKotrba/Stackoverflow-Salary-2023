@@ -1056,7 +1056,7 @@ def server(input: Inputs, output: Outputs, session: Session):
             y_pred = output[4]
 
             with reactive.isolate():  # predict button - isolate this event
-                return f"{model_name} model: \nYour salary: {round(float(sample(pipe)[0]),2)} USD \n\nMAPE: {round(outcome.difference_percentage.abs().mean(),2)}% \nMAE: {round(mean_absolute_error(y_test, y_pred),2)} \nRMSE: {round(np.sqrt(mean_squared_error(y_test, y_pred)),2)} \nR2: {round(r2_score(y_test, y_pred),2)}"
+                return f"{model_name} model: \nYour salary yearly: {round(float(sample(pipe)[0]),2)} USD \nYour salary yearly: {round(float(sample(pipe)[0]) * 0.9241,2)} EUR \nYour salary monthly: {round(float(sample(pipe)[0]) * 22.210 / 12,2)} CZK \n\nMAPE: {round(outcome.difference_percentage.abs().mean(),2)}% \nMAE: {round(mean_absolute_error(y_test, y_pred),2)} \nRMSE: {round(np.sqrt(mean_squared_error(y_test, y_pred)),2)} \nR2: {round(r2_score(y_test, y_pred),2)}"
 
     # - PLOT -
 
