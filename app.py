@@ -17,7 +17,6 @@
 # rsconnect deploy shiny . --entrypoint app:app
 
 # TASKs
-# convert prediction to CZK EUR
 # connect with google sheets
 # favicon to the top
 

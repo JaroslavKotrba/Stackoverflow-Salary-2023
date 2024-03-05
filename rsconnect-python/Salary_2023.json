@@ -1,0 +1,12 @@
+{
+    "https://api.shinyapps.io": {
+        "server_url": "https://api.shinyapps.io",
+        "filename": "/Users/hp/Dropbox/Documents/Python/Salary_2023",
+        "app_url": "https://jaroslavkotrba.shinyapps.io/salary_2023/",
+        "app_id": 11404040,
+        "app_guid": null,
+        "title": "Salary_2023",
+        "app_mode": "python-shiny",
+        "app_store_version": 1
+    }
+}
