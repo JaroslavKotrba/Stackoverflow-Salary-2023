@@ -1,13 +1,12 @@
 # https://shinylive.io/py/examples/#shinyswatch
 
-# Installation
+# INSTALLATION
 # https://shiny.posit.co/py/docs/install.html
 # conda create -n shiny2 python=3.11
 # pip install shiny
-# pip install scikit-learn (optional)
 # shiny run
 
-# Deployment
+# DEPLOYMENT
 # https://login.shinyapps.io/login
 # pip install rsconnect-python
 # pip freeze > requirements.txt
@@ -16,7 +15,23 @@
 # rsconnect list (optional)
 # rsconnect deploy shiny . --entrypoint app:app
 
-# TASKs
+# GOOGLE SHEETS
+# https://www.youtube.com/watch?v=zCEJurLGFRk
+
+# Service Accounts
+# https://console.cloud.google.com/apis/credentials?authuser=1&project=shiny-salary-2023-in-python
+# Enable APIs & services -> ENABLE APIS AND SERVICES -> search Google Sheets API and Google Drive API -> ENABLE -> CREATE CREDENTIALS (after enabling) -> Application data NEXT -> Salary 2023 Shiny in Python -> CREATE AND CONTINUE -> Editor -> CONTINUE -> DONE
+
+# Get Keys
+# Enable APIs & services -> click on Service account -> KEYS -> Json -> CREATE -> put .json in folder Credentials
+
+# Add email to the folder (keep restricted)
+# e.g. github-action@real-estate-automation-in-r.iam.gserviceaccount.com
+
+# Libraries
+# pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib gspread
+
+# TASKS
 # connect with google sheets
 # favicon to the top
 
@@ -253,7 +268,10 @@ app_ui = ui.page_navbar(
                     ),
                     ui.tags.br(),
                     ui.input_action_button(
-                        "action", "Predict", icon=icon_svg("play"), class_="btn-primary"
+                        "predict",
+                        "Predict",
+                        icon=icon_svg("play"),
+                        class_="btn-primary",
                     ),
                 ),
             ),
@@ -333,7 +351,6 @@ app_ui = ui.page_navbar(
                         ),
                         ui.tags.h2("Output of the model will appear here:"),
                         ui.output_text_verbatim("xgb"),
-                        ui.tags.br(),
                         ui.HTML(
                             '<p>Source data: <a href="https://insights.stackoverflow.com/survey" target="_blank">https://insights.stackoverflow.com/survey</a></p>'
                         ),
@@ -382,6 +399,47 @@ app_ui = ui.page_navbar(
                         ),
                         ui.tags.br(),
                         ui.tags.br(),
+                        ui.HTML(
+                            '<p>Source data: <a href="https://insights.stackoverflow.com/survey" target="_blank">https://insights.stackoverflow.com/survey</a></p>'
+                        ),
+                        ui.HTML(
+                            '<p>Author\'s projects: <a href="https://jaroslavkotrba.com" target="_blank">https://jaroslavkotrba.com</a></p>'
+                        ),
+                    ),
+                    ui.nav_panel(
+                        "Salary research",
+                        ui.tags.h2("Make model more accurate:"),
+                        ui.tags.p(
+                            "Fill your characteristics in the side bar menu, insert your yearly salary (USD) below and hit 'Sent Data' button."
+                        ),
+                        ui.input_numeric(
+                            "your_salary",
+                            "Insert our yearly salary (USD)",
+                            30000,
+                            min=1,
+                            max=1000000,
+                            step=1,
+                        ),
+                        ui.input_action_button(
+                            "sendSalary",
+                            "Send Data",
+                            icon=icon_svg("upload"),
+                            class_="btn-secondary",
+                        ),
+                        ui.tags.script(  # to reload after sending
+                            """
+                            document.getElementById('sendSalary').addEventListener('click', function() {
+                                setTimeout(function() {
+                                    window.location.reload();
+                                }, 7000); // 7000 milliseconds = 7 seconds
+                            });
+                            """
+                        ),
+                        ui.tags.br(),
+                        ui.tags.cite(
+                            "After clicking just wait a few sec for a confirmation that will appear below - page will reload shortly after..."
+                        ),
+                        ui.output_text_verbatim("google_sheet_update"),
                         ui.HTML(
                             '<p>Source data: <a href="https://insights.stackoverflow.com/survey" target="_blank">https://insights.stackoverflow.com/survey</a></p>'
                         ),
@@ -494,7 +552,7 @@ app_ui = ui.page_navbar(
     title=ui.tags.div(  # title must be at the end of the UI
         ui.tags.a(
             ui.tags.img(
-                src="https://png2.cleanpng.com/sh/1dcec92eab385547d9cb2e29d1bdfb67/L0KzQYm3V8AyN5R1jpH0aYP2gLBuTfNwdaF6jNd7LXnmf7B6TgNidJJ3kZ95YYnwdbB7Tf1wdpZARddtdXPkhLr2jr1kaZ51edtwboOwRbO6WPJmOpdmTaQDYUCxR4O9VMI2OGk2TaU5NES4Q4aCVsc3PV91htk=/kisspng-computer-icons-salary-payment-money-education-campaigns-5b38be2fa528a0.7264250815304453596765.png",
+                src="https://freeiconshop.com/wp-content/uploads/edd/wallet-outline-filled.png",
                 style="height:50px;",
             ),
             href="https://jaroslavkotrba.shinyapps.io/salary_2023/",
@@ -509,6 +567,7 @@ def server(input: Inputs, output: Outputs, session: Session):
 
     # - PREDICTION -
 
+    # Model prediction section
     @output
     @render.text
     def country():
@@ -796,7 +855,7 @@ def server(input: Inputs, output: Outputs, session: Session):
 
     @reactive.Effect  # predict button - init
     @reactive.event(
-        input.action
+        input.predict
     )  # predict button - calculation will happen after the button click for the first time
     def _():
         # Model pipeline
@@ -1057,6 +1116,102 @@ def server(input: Inputs, output: Outputs, session: Session):
             with reactive.isolate():  # predict button - isolate this event
                 return f"{model_name} model: \nYour salary yearly: {round(float(sample(pipe)[0]),2)} USD \nYour salary yearly: {round(float(sample(pipe)[0]) * 0.9241,2)} EUR \nYour salary monthly: {round(float(sample(pipe)[0]) * 22.210 / 12,2)} CZK \n\nMAPE: {round(outcome.difference_percentage.abs().mean(),2)}% \nMAE: {round(mean_absolute_error(y_test, y_pred),2)} \nRMSE: {round(np.sqrt(mean_squared_error(y_test, y_pred)),2)} \nR2: {round(r2_score(y_test, y_pred),2)}"
 
+    # Model description section
+    @render.download(filename="data.csv")
+    def downloadData():
+        yield df.to_string(index=False)
+
+    # Model research section
+    @reactive.Effect  # send button - init
+    @reactive.event(
+        input.sendSalary
+    )  # predict button - calculation will happen after the button click for the first time
+    def _():
+        def sendSalary():
+            import gspread
+
+            gc = gspread.service_account(filename="Credentials/google-sheets-api.json")
+
+            sh = gc.open("Salary_2023-Shiny-Python")
+            worksheet = sh.sheet1
+
+            user = [
+                input.your_salary(),
+                input.country(),
+                input.education(),
+                input.years(),
+                input.dev(),
+                input.organization(),
+                input.system(),
+                input.age(),
+                int(input.APL()),
+                int(input.Ada()),
+                int(input.Apex()),
+                int(input.Assembly()),
+                int(input.Bash_Shell()),
+                int(input.C()),
+                int(input.CSharp()),
+                int(input.CPlusPlus()),
+                int(input.Clojure()),
+                int(input.Cobol()),
+                int(input.Crystal()),
+                int(input.Dart()),
+                int(input.Delphi()),
+                int(input.Elixir()),
+                int(input.Erlang()),
+                int(input.FSharp()),
+                int(input.Flow()),
+                int(input.Fortran()),
+                int(input.GDScript()),
+                int(input.Go()),
+                int(input.Groovy()),
+                int(input.HTML_CSS()),
+                int(input.Haskell()),
+                int(input.Java()),
+                int(input.JavaScript()),
+                int(input.Julia()),
+                int(input.Kotlin()),
+                int(input.Lisp()),
+                int(input.Lua()),
+                int(input.Matlab()),
+                int(input.Nim()),
+                int(input.OCaml()),
+                int(input.Objective_C()),
+                int(input.PHP()),
+                int(input.Perl()),
+                int(input.PowerShell()),
+                int(input.Prolog()),
+                int(input.Python()),
+                int(input.R()),
+                int(input.Raku()),
+                int(input.Ruby()),
+                int(input.Rust()),
+                int(input.SAS()),
+                int(input.SQL()),
+                int(input.Scala()),
+                int(input.Solidity()),
+                int(input.Swift()),
+                int(input.TypeScript()),
+                int(input.VBA()),
+                int(input.Visual_Basic_Net()),
+                int(input.Zig()),
+            ]
+
+            worksheet.append_row(user)
+            print("Google sheet successfully updated!")
+
+        def printSalary():
+            @output
+            @render.text
+            def google_sheet_update():
+                return (
+                    f"Data successfully updated with input: {input.your_salary()} USD"
+                )
+
+        with reactive.isolate():  # predict button - isolate this event
+            sendSalary()
+            printSalary()
+
     # - PLOT -
 
     import numpy as np
@@ -1114,10 +1269,6 @@ def server(input: Inputs, output: Outputs, session: Session):
     )
 
     register_widget("map1", map1)
-
-    @render.download(filename="data.csv")
-    def downloadData():
-        yield df.to_string(index=False)
 
 
 app = App(app_ui, server)

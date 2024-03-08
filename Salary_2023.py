@@ -472,7 +472,7 @@ import matplotlib.pyplot as plt
 
 import os
 
-path = "/Users/HP/OneDrive/Documents/PythonAnaconda/Shiny_Salary_App/Salary_2023"
+path = os.getcwd()
 os.chdir(path)
 os.listdir()
 

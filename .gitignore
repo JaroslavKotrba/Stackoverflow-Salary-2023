@@ -1,6 +1,9 @@
 # TOO BIG DATASET for GitHub
 survey_results_public_2023.csv
 
+# CREDENTIALS
+Credentials/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
