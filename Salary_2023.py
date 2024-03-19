@@ -20,7 +20,7 @@ import warnings
 warnings.filterwarnings("ignore")
 
 # Import
-data = pd.read_csv("survey_results_public_2023.csv")
+data = pd.read_csv("data/survey_results_public_2023.csv")
 data.columns
 data.shape
 data
@@ -458,7 +458,7 @@ df.drop(
 )
 
 # SAVE
-df.to_csv("survey_clean.csv", index=False)
+df.to_csv("data/survey_clean.csv", index=False)
 
 # ---------------------------------------------------------------------------------------------------------------
 # 1. Modeling pipe based ----------------------------------------------------------------------------------------
@@ -481,7 +481,7 @@ import warnings
 warnings.filterwarnings("ignore")
 
 # Import
-df = pd.read_csv("survey_clean.csv")
+df = pd.read_csv("data/survey_clean.csv")
 df
 
 # Splitting
@@ -546,9 +546,69 @@ def print_regression_metrics(model, X_train, X_test, y_train, y_test):
 
 # Sample
 def sample(pipe, X_test):
-    X_sample = np.array(["Czech Republic", "Master’s degree", "3", "Developer, back-end", "10,000 or more employees", "Windows", "25-34",
-                           "0",   "0",   "0",     "0",                 "1",           "0",  "1",  "0",     "0",      "0",      "0",      "0",     "0",      "0",      "0",    "0",   "0",     "0",       "0",     "0",    "0",       "1",       "0",       "0",       "0",       "0",     "0",      "0",   "0",   "0",     "0",    "0",        "0",       "0",   "0",       "0",         "0",     "1",    "1",  "0",    "0",    "0",    "0",   "1",    "0",      "0",       "0",        "0",      "0",           "0",           "0"])
-                        # 'APL', 'Ada', 'Apex' 'Assembly', 'Bash/Shell (all shells)', 'C', 'C#', 'C++', 'Clojure', 'Cobol', 'Crystal', 'Dart', 'Delphi', 'Elixir', 'Erlang', 'F#', 'Flow', 'Fortran', 'GDScript', 'Go', 'Groovy', 'HTML/CSS', 'Haskell', 'Java', 'JavaScript', 'Julia', 'Kotlin', 'Lisp', 'Lua' 'MATLAB', 'Nim', 'OCaml', 'Objective-C', 'PHP', 'Perl', 'PowerShell', 'Prolog', 'Python', 'R', 'Raku', 'Ruby', 'Rust', 'SAS', 'SQL', 'Scala', 'Solidity', 'Swift', 'TypeScript', 'VBA', 'Visual Basic (.Net)', 'Zig'
+    X_sample = np.array(
+        [
+            "Czech Republic",
+            "Master’s degree",
+            "3",
+            "Developer, back-end",
+            "10,000 or more employees",
+            "Windows",
+            "25-34",
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+        ]
+    )
+    # 'APL', 'Ada', 'Apex' 'Assembly', 'Bash/Shell (all shells)', 'C', 'C#', 'C++', 'Clojure', 'Cobol', 'Crystal', 'Dart', 'Delphi', 'Elixir', 'Erlang', 'F#', 'Flow', 'Fortran', 'GDScript', 'Go', 'Groovy', 'HTML/CSS', 'Haskell', 'Java', 'JavaScript', 'Julia', 'Kotlin', 'Lisp', 'Lua' 'MATLAB', 'Nim', 'OCaml', 'Objective-C', 'PHP', 'Perl', 'PowerShell', 'Prolog', 'Python', 'R', 'Raku', 'Ruby', 'Rust', 'SAS', 'SQL', 'Scala', 'Solidity', 'Swift', 'TypeScript', 'VBA', 'Visual Basic (.Net)', 'Zig'
 
     X_sample = pd.DataFrame(X_sample.reshape(1, -1))
     X_sample.columns = X_test.columns

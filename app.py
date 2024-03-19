@@ -26,7 +26,7 @@
 # Enable APIs & services -> click on Service account -> KEYS -> Json -> CREATE -> put .json in folder Credentials
 
 # Add email to the folder (keep restricted)
-# e.g. github-action@real-estate-automation-in-r.iam.gserviceaccount.com
+# e.g. salary-2023-shiny-in-python@shiny-salary-2023-in-python.iam.gserviceaccount.com
 
 # Libraries
 # pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib gspread
@@ -410,7 +410,7 @@ app_ui = ui.page_navbar(
                         "Salary research",
                         ui.tags.h2("Make model more accurate:"),
                         ui.tags.p(
-                            "Fill your characteristics in the side bar menu, insert your yearly salary (USD) below and hit 'Sent Data' button."
+                            "Fill your characteristics in the side bar menu, insert your yearly salary (USD) below and hit the 'Sent Data' button."
                         ),
                         ui.input_numeric(
                             "your_salary",
@@ -864,7 +864,7 @@ def server(input: Inputs, output: Outputs, session: Session):
             import numpy as np
             import pandas as pd
 
-            df = pd.read_csv("survey_clean.csv")
+            df = pd.read_csv("data/survey_clean.csv")
             df
 
             # Splitting
@@ -1130,7 +1130,7 @@ def server(input: Inputs, output: Outputs, session: Session):
         def sendSalary():
             import gspread
 
-            gc = gspread.service_account(filename="Credentials/google-sheets-api.json")
+            gc = gspread.service_account(filename="credentials/google-sheets-api.json")
 
             sh = gc.open("Salary_2023-Shiny-Python")
             worksheet = sh.sheet1
@@ -1218,7 +1218,7 @@ def server(input: Inputs, output: Outputs, session: Session):
     import pandas as pd
     import plotly.express as px
 
-    df = pd.read_csv("survey_clean.csv")
+    df = pd.read_csv("data/survey_clean.csv")
     df
 
     @reactive.Calc

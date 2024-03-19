@@ -2,7 +2,7 @@
 survey_results_public_2023.csv
 
 # CREDENTIALS
-Credentials/
+credentials/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

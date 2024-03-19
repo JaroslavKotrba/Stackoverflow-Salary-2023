@@ -3,7 +3,7 @@
 
 import gspread
 
-gc = gspread.service_account(filename="Credentials/google-sheets-api.json")
+gc = gspread.service_account(filename="../credentials/google-sheets-api.json")
 
 sh = gc.open("Salary_2023-Shiny-Python")
 worksheet = sh.sheet1
@@ -142,12 +142,14 @@ worksheet.append_row(user)
 import gspread
 import pandas as pd
 
-gc = gspread.service_account(filename="Credentials/google-sheets-api.json")
+# api
+gc = gspread.service_account(filename="../credentials/google-sheets-api.json")
 
+# sheet
 sh = gc.open("Salary_2023-Shiny-Python")
-worksheet = sh.sheet1
-
+worksheet = sh.get_worksheet(0)  # Sheet1
 records = worksheet.get_all_records()
 
+# df
 df = pd.DataFrame(records)
 df
