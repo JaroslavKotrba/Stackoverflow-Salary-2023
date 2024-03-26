@@ -3,6 +3,7 @@
 # INSTALLATION
 # https://shiny.posit.co/py/docs/install.html
 # conda create -n shiny2 python=3.11
+# extension "Shiny for Python"
 # pip install shiny
 # shiny run
 
@@ -32,7 +33,6 @@
 # pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib gspread
 
 # TASKS
-# connect with google sheets
 # favicon to the top
 
 # Import

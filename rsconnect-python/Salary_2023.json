@@ -1,7 +1,7 @@
 {
     "https://api.shinyapps.io": {
         "server_url": "https://api.shinyapps.io",
-        "filename": "/Users/hp/Dropbox/Documents/Python/Salary_2023",
+        "filename": "/Users/hp/Dropbox/Documents/Python/ShinyApps/Salary_2023",
         "app_url": "https://jaroslavkotrba.shinyapps.io/salary_2023/",
         "app_id": 11404040,
         "app_guid": null,
