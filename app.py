@@ -2,7 +2,9 @@
 
 # INSTALLATION
 # https://shiny.posit.co/py/docs/install.html
-# conda create -n shiny2 python=3.11
+# conda create -n salary python=3.11
+# conda env remove --name salary
+
 # extension "Shiny for Python"
 # pip install shiny
 # shiny run
@@ -11,12 +13,13 @@
 # https://login.shinyapps.io/login
 # pip install rsconnect-python
 # pip freeze > requirements.txt
-# conda env export --name shiny2 > environment.yml (optional)
+# conda env export --name salary > environment.yml (optional)
 # rsconnect add --account jaroslavkotrba --name jaroslavkotrba --token XXXXXXXXXXXXXXXXXXXXXXXXXX --secret XXXXXXXXXXXXXXXXXXXXXXXXXX
 # rsconnect list (optional)
-# rsconnect deploy shiny . --entrypoint app:app
+# rsconnect deploy shiny . --entrypoint app:app --name jaroslavkotrba --title "salary_2023"
 
 # GOOGLE SHEETS
+# https://docs.google.com/spreadsheets/d/1tw7vAcSoo2vysrsIEGk03xZVdVWYpqtRBcuWcFs3O4k/edit#gid=0
 # https://www.youtube.com/watch?v=zCEJurLGFRk
 
 # Service Accounts
@@ -33,7 +36,8 @@
 # pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib gspread
 
 # TASKS
-# favicon to the top
+# TODO: favicon to the top
+# TODO: colapsible side bar
 
 # Import
 import shinyswatch
@@ -41,13 +45,14 @@ from shiny import App, Inputs, Outputs, Session, render, ui, reactive
 from faicons import icon_svg  # play sign icon
 
 from shinywidgets import output_widget, register_widget, render_widget  # plots
+import asyncio
 
 app_ui = ui.page_navbar(
     # Available themes:
     #  cerulean, cosmo, cyborg, darkly, flatly, journal, litera, lumen, lux,
     #  materia, minty, morph, pulse, quartz, sandstone, simplex, sketchy, slate,
     #  solar, spacelab, superhero, united, vapor, yeti, zephyr
-    shinyswatch.theme.lumen(),
+    shinyswatch.theme.sketchy(),
     # ui.tags.head(
     #     ui.tags.html(
     #         '<link rel="icon" href="https://png2.cleanpng.com/sh/1dcec92eab385547d9cb2e29d1bdfb67/L0KzQYm3V8AyN5R1jpH0aYP2gLBuTfNwdaF6jNd7LXnmf7B6TgNidJJ3kZ95YYnwdbB7Tf1wdpZARddtdXPkhLr2jr1kaZ51edtwboOwRbO6WPJmOpdmTaQDYUCxR4O9VMI2OGk2TaU5NES4Q4aCVsc3PV91htk=/kisspng-computer-icons-salary-payment-money-education-campaigns-5b38be2fa528a0.7264250815304453596765.png">'
@@ -56,7 +61,7 @@ app_ui = ui.page_navbar(
     ui.nav_panel(
         "- PREDICTION -",
         ui.layout_sidebar(
-            ui.panel_sidebar(
+            ui.sidebar(
                 ui.tags.h2("Inputs for the model:"),
                 ui.input_select(
                     id="country",
@@ -266,189 +271,187 @@ app_ui = ui.page_navbar(
                         ui.input_checkbox("Visual_Basic_Net", "Visual Basic (.Net)"),
                         ui.input_checkbox("Zig", "Zig"),
                     ),
-                    ui.tags.br(),
-                    ui.input_action_button(
-                        "predict",
-                        "Predict",
-                        icon=icon_svg("play"),
-                        class_="btn-primary",
-                    ),
                 ),
             ),
-            ui.panel_main(
-                ui.navset_tab(
-                    ui.nav_panel(
-                        "Model prediction",
-                        ui.tags.h2("Your main inputs:"),
-                        ui.output_text_verbatim("country"),
-                        ui.output_text_verbatim("education"),
-                        ui.output_text_verbatim("years"),
-                        ui.output_text_verbatim("dev"),
-                        ui.output_text_verbatim("organization"),
-                        ui.output_text_verbatim("system"),
-                        ui.output_text_verbatim("age"),
-                        ui.row(
-                            ui.column(
-                                4,
-                                ui.output_text_verbatim("APL"),
-                                ui.output_text_verbatim("Ada"),
-                                ui.output_text_verbatim("Apex"),
-                                ui.output_text_verbatim("Assembly"),
-                                ui.output_text_verbatim("Bash_Shell"),
-                                ui.output_text_verbatim("C"),
-                                ui.output_text_verbatim("CSharp"),
-                                ui.output_text_verbatim("CPlusPlus"),
-                                ui.output_text_verbatim("Clojure"),
-                                ui.output_text_verbatim("Cobol"),
-                                ui.output_text_verbatim("Crystal"),
-                                ui.output_text_verbatim("Dart"),
-                                ui.output_text_verbatim("Delphi"),
-                                ui.output_text_verbatim("Elixir"),
-                                ui.output_text_verbatim("Erlang"),
-                                ui.output_text_verbatim("FSharp"),
-                                ui.output_text_verbatim("Flow"),
-                                ui.output_text_verbatim("Fortran"),
-                            ),
-                            ui.column(
-                                4,
-                                ui.output_text_verbatim("GDScript"),
-                                ui.output_text_verbatim("Go"),
-                                ui.output_text_verbatim("Groovy"),
-                                ui.output_text_verbatim("HTML_CSS"),
-                                ui.output_text_verbatim("Haskell"),
-                                ui.output_text_verbatim("Java"),
-                                ui.output_text_verbatim("JavaScript"),
-                                ui.output_text_verbatim("Julia"),
-                                ui.output_text_verbatim("Kotlin"),
-                                ui.output_text_verbatim("Lisp"),
-                                ui.output_text_verbatim("Lua"),
-                                ui.output_text_verbatim("Matlab"),
-                                ui.output_text_verbatim("Nim"),
-                                ui.output_text_verbatim("OCaml"),
-                                ui.output_text_verbatim("Objective_C"),
-                                ui.output_text_verbatim("PHP"),
-                                ui.output_text_verbatim("Perl"),
-                            ),
-                            ui.column(
-                                4,
-                                ui.output_text_verbatim("PowerShell"),
-                                ui.output_text_verbatim("Prolog"),
-                                ui.output_text_verbatim("Python"),
-                                ui.output_text_verbatim("R"),
-                                ui.output_text_verbatim("Raku"),
-                                ui.output_text_verbatim("Ruby"),
-                                ui.output_text_verbatim("Rust"),
-                                ui.output_text_verbatim("SAS"),
-                                ui.output_text_verbatim("SQL"),
-                                ui.output_text_verbatim("Scala"),
-                                ui.output_text_verbatim("Solidity"),
-                                ui.output_text_verbatim("Swift"),
-                                ui.output_text_verbatim("TypeScript"),
-                                ui.output_text_verbatim("VBA"),
-                                ui.output_text_verbatim("Visual_Basic_Net"),
-                                ui.output_text_verbatim("Zig"),
-                            ),
+            ui.navset_tab(
+                ui.nav_panel(
+                    "Model prediction",
+                    ui.tags.h2("Your main inputs:"),
+                    ui.output_text_verbatim("country"),
+                    ui.output_text_verbatim("education"),
+                    ui.output_text_verbatim("years"),
+                    ui.output_text_verbatim("dev"),
+                    ui.output_text_verbatim("organization"),
+                    ui.output_text_verbatim("system"),
+                    ui.output_text_verbatim("age"),
+                    ui.row(
+                        ui.column(
+                            4,
+                            ui.output_text_verbatim("APL"),
+                            ui.output_text_verbatim("Ada"),
+                            ui.output_text_verbatim("Apex"),
+                            ui.output_text_verbatim("Assembly"),
+                            ui.output_text_verbatim("Bash_Shell"),
+                            ui.output_text_verbatim("C"),
+                            ui.output_text_verbatim("CSharp"),
+                            ui.output_text_verbatim("CPlusPlus"),
+                            ui.output_text_verbatim("Clojure"),
+                            ui.output_text_verbatim("Cobol"),
+                            ui.output_text_verbatim("Crystal"),
+                            ui.output_text_verbatim("Dart"),
+                            ui.output_text_verbatim("Delphi"),
+                            ui.output_text_verbatim("Elixir"),
+                            ui.output_text_verbatim("Erlang"),
+                            ui.output_text_verbatim("FSharp"),
+                            ui.output_text_verbatim("Flow"),
+                            ui.output_text_verbatim("Fortran"),
                         ),
-                        ui.tags.h2("Output of the model will appear here:"),
-                        ui.output_text_verbatim("xgb"),
-                        ui.HTML(
-                            '<p>Source data: <a href="https://insights.stackoverflow.com/survey" target="_blank">https://insights.stackoverflow.com/survey</a></p>'
+                        ui.column(
+                            4,
+                            ui.output_text_verbatim("GDScript"),
+                            ui.output_text_verbatim("Go"),
+                            ui.output_text_verbatim("Groovy"),
+                            ui.output_text_verbatim("HTML_CSS"),
+                            ui.output_text_verbatim("Haskell"),
+                            ui.output_text_verbatim("Java"),
+                            ui.output_text_verbatim("JavaScript"),
+                            ui.output_text_verbatim("Julia"),
+                            ui.output_text_verbatim("Kotlin"),
+                            ui.output_text_verbatim("Lisp"),
+                            ui.output_text_verbatim("Lua"),
+                            ui.output_text_verbatim("Matlab"),
+                            ui.output_text_verbatim("Nim"),
+                            ui.output_text_verbatim("OCaml"),
+                            ui.output_text_verbatim("Objective_C"),
+                            ui.output_text_verbatim("PHP"),
+                            ui.output_text_verbatim("Perl"),
                         ),
-                        ui.HTML(
-                            '<p>Author\'s projects: <a href="https://jaroslavkotrba.com" target="_blank">https://jaroslavkotrba.com</a></p>'
+                        ui.column(
+                            4,
+                            ui.output_text_verbatim("PowerShell"),
+                            ui.output_text_verbatim("Prolog"),
+                            ui.output_text_verbatim("Python"),
+                            ui.output_text_verbatim("R"),
+                            ui.output_text_verbatim("Raku"),
+                            ui.output_text_verbatim("Ruby"),
+                            ui.output_text_verbatim("Rust"),
+                            ui.output_text_verbatim("SAS"),
+                            ui.output_text_verbatim("SQL"),
+                            ui.output_text_verbatim("Scala"),
+                            ui.output_text_verbatim("Solidity"),
+                            ui.output_text_verbatim("Swift"),
+                            ui.output_text_verbatim("TypeScript"),
+                            ui.output_text_verbatim("VBA"),
+                            ui.output_text_verbatim("Visual_Basic_Net"),
+                            ui.output_text_verbatim("Zig"),
                         ),
                     ),
-                    ui.nav_panel(
-                        "Model description",
-                        ui.tags.h2("About the model:"),
-                        ui.tags.img(
-                            src="https://www.researchgate.net/profile/Lara-Demajo/publication/350874464/figure/fig2/AS:1012594076827648@1618432649350/XGBoost-model-Source-Self.ppm",
-                            height="100%",
-                            width="100%",
-                        ),
-                        ui.tags.br(),
-                        ui.tags.br(),
-                        ui.tags.p(
-                            "XGBoost, short for eXtreme Gradient Boosting, is an advanced and highly efficient implementation of gradient boosting, a machine learning technique used for regression, classification, and ranking problems. Developed as a project under the Distributed Machine Learning Community (DMLC), XGBoost has gained popularity for its performance and speed in machine learning competitions and real-world applications."
-                        ),
-                        ui.tags.p(
-                            "Gradient Boosting Framework: At its core, XGBoost uses the gradient boosting framework, where new models are created that predict the residuals or errors of prior models and then added together to make the final prediction. It's an ensemble technique that builds models sequentially, each new model correcting errors made by previous ones."
-                        ),
-                        ui.tags.p(
-                            "Regularization: XGBoost includes L1 (Lasso Regression) and L2 (Ridge Regression) regularization terms in the objective function, which helps in reducing overfitting and improving model performance on unseen data."
-                        ),
-                        ui.tags.p(
-                            "Handling of Sparse Data: XGBoost can efficiently handle sparse data (data with lots of zeros or missing values), making it suitable for a wide range of applications, including recommender systems and click prediction."
-                        ),
-                        ui.tags.p(
-                            "Scalability and Efficiency: It is designed to be highly efficient, scalable, and portable. XGBoost can run on a single machine as well as on a distributed computing framework like Hadoop, and it utilizes resources optimally to achieve high performance."
-                        ),
-                        ui.tags.p(
-                            "Flexibility: XGBoost allows users to define custom optimization objectives and evaluation criteria, adding a layer of flexibility that lets it be adapted to a wide range of domain-specific applications."
-                        ),
-                        ui.tags.p(
-                            "Built-in Cross-validation: XGBoost has an integrated cross-validation tool at each iteration, making it easy to obtain accurate models without manually coding the cross-validation process."
-                        ),
-                        ui.tags.p(
-                            "Handling of Missing Values: The algorithm has an in-built routine to handle missing values, allowing it to learn the best direction to take for missing values automatically."
-                        ),
-                        ui.download_button(
-                            "downloadData",
-                            "Download data.csv",
-                            icon=icon_svg("download"),
-                        ),
-                        ui.tags.br(),
-                        ui.tags.br(),
-                        ui.HTML(
-                            '<p>Source data: <a href="https://insights.stackoverflow.com/survey" target="_blank">https://insights.stackoverflow.com/survey</a></p>'
-                        ),
-                        ui.HTML(
-                            '<p>Author\'s projects: <a href="https://jaroslavkotrba.com" target="_blank">https://jaroslavkotrba.com</a></p>'
-                        ),
+                    ui.div(style="height:25px;"),
+                    ui.input_action_button(
+                        "predict",
+                        "Model Prediction",
+                        icon=icon_svg("play"),
+                        class_="btn-success",
                     ),
-                    ui.nav_panel(
-                        "Salary research",
-                        ui.tags.h2("Make model more accurate:"),
-                        ui.tags.p(
-                            "Fill your characteristics in the side bar menu, insert your yearly salary (USD) below and hit the 'Sent Data' button."
-                        ),
-                        ui.input_numeric(
-                            "your_salary",
-                            "Insert our yearly salary (USD)",
-                            30000,
-                            min=1,
-                            max=1000000,
-                            step=1,
-                        ),
-                        ui.input_action_button(
-                            "sendSalary",
-                            "Send Data",
-                            icon=icon_svg("upload"),
-                            class_="btn-secondary",
-                        ),
-                        ui.tags.script(  # to reload after sending
-                            """
-                            document.getElementById('sendSalary').addEventListener('click', function() {
-                                setTimeout(function() {
-                                    window.location.reload();
-                                }, 7000); // 7000 milliseconds = 7 seconds
-                            });
-                            """
-                        ),
-                        ui.tags.br(),
-                        ui.tags.cite(
-                            "After clicking just wait a few sec for a confirmation that will appear below - page will reload shortly after..."
-                        ),
-                        ui.output_text_verbatim("google_sheet_update"),
-                        ui.HTML(
-                            '<p>Source data: <a href="https://insights.stackoverflow.com/survey" target="_blank">https://insights.stackoverflow.com/survey</a></p>'
-                        ),
-                        ui.HTML(
-                            '<p>Author\'s projects: <a href="https://jaroslavkotrba.com" target="_blank">https://jaroslavkotrba.com</a></p>'
-                        ),
+                    ui.div(style="height:25px;"),
+                    ui.tags.h2("Output of the model will appear here:"),
+                    ui.output_text_verbatim("xgb"),
+                ),
+                ui.nav_panel(
+                    "Model description",
+                    ui.tags.h2("About the model:"),
+                    ui.tags.img(
+                        src="https://www.researchgate.net/profile/Lara-Demajo/publication/350874464/figure/fig2/AS:1012594076827648@1618432649350/XGBoost-model-Source-Self.ppm",
+                        height="100%",
+                        width="100%",
                     ),
-                )
+                    ui.tags.br(),
+                    ui.tags.br(),
+                    ui.tags.p(
+                        "XGBoost, short for eXtreme Gradient Boosting, is an advanced and highly efficient implementation of gradient boosting, a machine learning technique used for regression, classification, and ranking problems. Developed as a project under the Distributed Machine Learning Community (DMLC), XGBoost has gained popularity for its performance and speed in machine learning competitions and real-world applications."
+                    ),
+                    ui.tags.p(
+                        "Gradient Boosting Framework: At its core, XGBoost uses the gradient boosting framework, where new models are created that predict the residuals or errors of prior models and then added together to make the final prediction. It's an ensemble technique that builds models sequentially, each new model correcting errors made by previous ones."
+                    ),
+                    ui.tags.p(
+                        "Regularization: XGBoost includes L1 (Lasso Regression) and L2 (Ridge Regression) regularization terms in the objective function, which helps in reducing overfitting and improving model performance on unseen data."
+                    ),
+                    ui.tags.p(
+                        "Handling of Sparse Data: XGBoost can efficiently handle sparse data (data with lots of zeros or missing values), making it suitable for a wide range of applications, including recommender systems and click prediction."
+                    ),
+                    ui.tags.p(
+                        "Scalability and Efficiency: It is designed to be highly efficient, scalable, and portable. XGBoost can run on a single machine as well as on a distributed computing framework like Hadoop, and it utilizes resources optimally to achieve high performance."
+                    ),
+                    ui.tags.p(
+                        "Flexibility: XGBoost allows users to define custom optimization objectives and evaluation criteria, adding a layer of flexibility that lets it be adapted to a wide range of domain-specific applications."
+                    ),
+                    ui.tags.p(
+                        "Built-in Cross-validation: XGBoost has an integrated cross-validation tool at each iteration, making it easy to obtain accurate models without manually coding the cross-validation process."
+                    ),
+                    ui.tags.p(
+                        "Handling of Missing Values: The algorithm has an in-built routine to handle missing values, allowing it to learn the best direction to take for missing values automatically."
+                    ),
+                    ui.download_button(
+                        "downloadData",
+                        "Download data.csv",
+                        icon=icon_svg("download"),
+                    ),
+                    ui.div(style="height:10px;"),
+                    ui.HTML(
+                        '<p>Source data: <a href="https://insights.stackoverflow.com/survey" target="_blank">https://insights.stackoverflow.com/survey</a></p>'
+                    ),
+                ),
+                ui.nav_panel(
+                    "Salary research",
+                    ui.tags.h2("Make model more accurate:"),
+                    ui.tags.p(
+                        "Fill your characteristics in the side bar menu, insert your yearly salary (USD) below and hit the 'Sent Data' button."
+                    ),
+                    ui.input_numeric(
+                        "your_salary",
+                        "Insert your yearly salary (USD)",
+                        30000,
+                        min=1,
+                        max=1000000,
+                        step=1,
+                    ),
+                    ui.input_action_button(
+                        "sendSalary",
+                        "Send Data",
+                        icon=icon_svg("upload"),
+                        class_="btn-success",
+                    ),
+                    # ui.tags.script(  # to reload after sending
+                    #     """
+                    #     document.getElementById('sendSalary').addEventListener('click', function() {
+                    #         setTimeout(function() {
+                    #             window.location.reload();
+                    #         }, 7000); // 7000 milliseconds = 7 seconds
+                    #     });
+                    #     """
+                    # ),
+                    ui.div(style="height:10px;"),
+                    ui.HTML(
+                        "<p>After clicking just wait a few sec for a confirmation that will appear below...</p>"
+                    ),
+                    ui.output_ui("show_message"),
+                ),
             ),
+            border_radius=False,
+            # border_color="black",
+        ),
+        # Footer
+        ui.div(style="height:25px;"),
+        ui.HTML(
+            f"""
+            <div style="text-align:center;">
+                <p>Author's projects: <a href="https://jaroslavkotrba.com" style="text-decoration:none;" target="_blank">https://jaroslavkotrba.com</a></p>
+                <a href="https://www.linkedin.com/in/jaroslav-kotrba/" target="_blank" style="font-size:24px;">{icon_svg("linkedin")}</a>
+                <a href="https://github.com/JaroslavKotrba" target="_blank" style="font-size:24px;">{icon_svg("github")}</a>
+                <a href="https://www.facebook.com/jaroslav.kotrba.9/" target="_blank" style="font-size:24px;">{icon_svg("facebook")}</a>
+                <p>Copyright &copy; 2024</p>
+            </div>
+            """
         ),
     ),
     ui.nav_panel(
@@ -527,22 +530,36 @@ app_ui = ui.page_navbar(
             },
         ),
         output_widget("plot1"),
+        # Footer
+        ui.div(style="height:10px;"),
         ui.HTML(
-            '<p>Source data: <a href="https://insights.stackoverflow.com/survey" target="_blank">https://insights.stackoverflow.com/survey</a></p>'
-        ),
-        ui.HTML(
-            '<p>Author\'s projects: <a href="https://jaroslavkotrba.com" target="_blank">https://jaroslavkotrba.com</a></p>'
+            f"""
+            <div style="text-align:center;">
+                <p>Author's projects: <a href="https://jaroslavkotrba.com" style="text-decoration:none;" target="_blank">https://jaroslavkotrba.com</a></p>
+                <a href="https://www.linkedin.com/in/jaroslav-kotrba/" target="_blank" style="font-size:24px;">{icon_svg("linkedin")}</a>
+                <a href="https://github.com/JaroslavKotrba" target="_blank" style="font-size:24px;">{icon_svg("github")}</a>
+                <a href="https://www.facebook.com/jaroslav.kotrba.9/" target="_blank" style="font-size:24px;">{icon_svg("facebook")}</a>
+                <p>Copyright &copy; 2024</p>
+            </div>
+            """
         ),
     ),
     ui.nav_panel(
         "- MAP -",
         ui.tags.h2("Interactive World Map (USD):"),
         output_widget("map1"),
+        # Footer
+        ui.div(style="height:10px;"),
         ui.HTML(
-            '<p>Source data: <a href="https://insights.stackoverflow.com/survey" target="_blank">https://insights.stackoverflow.com/survey</a></p>'
-        ),
-        ui.HTML(
-            '<p>Author\'s projects: <a href="https://jaroslavkotrba.com" target="_blank">https://jaroslavkotrba.com</a></p>'
+            f"""
+            <div style="text-align:center;">
+                <p>Author's projects: <a href="https://jaroslavkotrba.com" style="text-decoration:none;" target="_blank">https://jaroslavkotrba.com</a></p>
+                <a href="https://www.linkedin.com/in/jaroslav-kotrba/" target="_blank" style="font-size:24px;">{icon_svg("linkedin")}</a>
+                <a href="https://github.com/JaroslavKotrba" target="_blank" style="font-size:24px;">{icon_svg("github")}</a>
+                <a href="https://www.facebook.com/jaroslav.kotrba.9/" target="_blank" style="font-size:24px;">{icon_svg("facebook")}</a>
+                <p>Copyright &copy; 2024</p>
+            </div>
+            """
         ),
     ),
     # bg = "#158cba",
@@ -1122,6 +1139,18 @@ def server(input: Inputs, output: Outputs, session: Session):
         yield df.to_string(index=False)
 
     # Model research section
+    message = reactive.Value("")
+
+    @output
+    @render.ui  # Use render.ui to allow HTML rendering
+    def show_message():
+        if message():
+            return ui.HTML(message())
+
+    async def hide_message_after_delay():
+        await asyncio.sleep(1)
+        message.set("")
+
     @reactive.Effect  # send button - init
     @reactive.event(
         input.sendSalary
@@ -1200,17 +1229,17 @@ def server(input: Inputs, output: Outputs, session: Session):
             worksheet.append_row(user)
             print("Google sheet successfully updated!")
 
-        def printSalary():
-            @output
-            @render.text
-            def google_sheet_update():
-                return (
-                    f"Data successfully updated with input: {input.your_salary()} USD"
-                )
+            session.send_input_message("your_salary", {"value": ""})
+
+            message.set(
+                "<div style='padding: 10px; border: 2px solid green; border-radius: 5px; background-color: #e6ffe6; color: green;'>"
+                "Data successfully updated!"
+                "</div>"
+            )
+            asyncio.create_task(hide_message_after_delay())
 
         with reactive.isolate():  # predict button - isolate this event
             sendSalary()
-            printSalary()
 
     # - PLOT -
 
