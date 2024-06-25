@@ -1,10 +1,11 @@
+# APP 2023
 # https://shinylive.io/py/examples/#shinyswatch
 
 # INSTALLATION
-# https://shiny.posit.co/py/docs/install.html
 # conda create -n salary python=3.11
 # conda env remove --name salary
 
+# SHINY
 # extension "Shiny for Python"
 # pip install shiny
 # shiny run

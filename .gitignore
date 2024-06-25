@@ -2,7 +2,7 @@
 survey_results_public_2023.csv
 
 # CREDENTIALS
-credentials/
+google-sheets-api.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

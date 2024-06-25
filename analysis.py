@@ -1,6 +1,5 @@
-# SALARY APP 2023
+# ANALYSIS 2023
 # https://insights.stackoverflow.com/survey
-# shiny2
 
 import numpy as np
 import pandas as pd
