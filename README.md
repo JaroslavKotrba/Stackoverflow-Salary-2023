@@ -17,7 +17,7 @@ Download data from [Stack Overflow Survey](https://survey.stackoverflow.co/) and
 python analysis.py
 ```
 
-### Step 3: Google Sheet API
+### Step 3: Google Sheets API
 
 #### Service account
 
