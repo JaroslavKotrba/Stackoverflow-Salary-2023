@@ -37,8 +37,7 @@
 # pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib gspread
 
 # TASKS
-# TODO: favicon to the top
-# TODO: colapsible side bar
+# TODO: new UI structure
 
 # Import
 import shinyswatch
@@ -54,11 +53,14 @@ app_ui = ui.page_navbar(
     #  materia, minty, morph, pulse, quartz, sandstone, simplex, sketchy, slate,
     #  solar, spacelab, superhero, united, vapor, yeti, zephyr
     shinyswatch.theme.sketchy(),
-    # ui.tags.head(
-    #     ui.tags.html(
-    #         '<link rel="icon" href="https://png2.cleanpng.com/sh/1dcec92eab385547d9cb2e29d1bdfb67/L0KzQYm3V8AyN5R1jpH0aYP2gLBuTfNwdaF6jNd7LXnmf7B6TgNidJJ3kZ95YYnwdbB7Tf1wdpZARddtdXPkhLr2jr1kaZ51edtwboOwRbO6WPJmOpdmTaQDYUCxR4O9VMI2OGk2TaU5NES4Q4aCVsc3PV91htk=/kisspng-computer-icons-salary-payment-money-education-campaigns-5b38be2fa528a0.7264250815304453596765.png">'
-    #     )
-    # ),
+    ui.head_content(
+        ui.tags.title("Salary of CODERs"),
+        ui.tags.link(
+            rel="icon",
+            type="image/jpeg",
+            href="https://freeiconshop.com/wp-content/uploads/edd/wallet-outline-filled.png",
+        ),
+    ),
     ui.nav_panel(
         "- PREDICTION -",
         ui.layout_sidebar(
